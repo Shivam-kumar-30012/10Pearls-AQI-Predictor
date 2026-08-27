@@ -1,0 +1,90 @@
+name: Daily model training
+
+# Retrains all three forecast models and registers them in the
+# Hopsworks Model Registry as a new version.
+#
+# Three training steps run, not two:
+#   06_train.py        -> the absolute models (days 2 and 3)
+#   06b_train_delta.py -> the delta model (day 1)
+#   07_register_models -> uploads whichever file each horizon uses
+#
+# Without 06b, day+1's model would go stale while days 2 and 3 kept
+# updating - the prediction script uses the delta model for day 1.
+
+on:
+  schedule:
+    # 02:00 UTC = 07:00 Pakistan time. After several hourly collections
+    # have run, so the models train on fresh data.
+    - cron: "0 2 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    # Training is ~15 min, plus the Hopsworks read and three uploads.
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Collect the latest data first
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        # Bring the store up to date before training, so the models
+        # never train on a store that fell behind because an hourly
+        # upload failed. Non-blocking: if this fails, training still
+        # runs and falls back to the local CSV.
+        continue-on-error: true
+        run: python pipeline/08_hourly_collector.py
+
+      - name: Train the absolute models (days 2 and 3)
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipeline/06_train.py
+
+      - name: Train the delta model (day 1)
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipeline/06b_train_delta.py
+
+      - name: Register all three models
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipeline/07_register_models.py
+
+      - name: Upload metrics as a build artifact
+        # The runner is wiped after each run, so this keeps a record of
+        # every run's scores. Downloadable from the Actions tab, and
+        # useful for spotting performance drift over time.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-${{ github.run_number }}
+          path: |
+            models/metrics.json
+            models/metrics_delta.json
+            models/feature_cols.json
+          retention-days: 30
+
+      - name: Explain a failure
+        if: failure()
+        run: |
+          echo "Training failed. Common causes:"
+          echo "  - Hopsworks free-tier quota exhausted"
+          echo "  - Not enough new data since the last run"
+          echo "The previously registered model version stays live, so"
+          echo "the dashboard keeps working."

@@ -1,0 +1,52 @@
+name: Hourly feature collection
+
+# Fetches the latest pollutant and weather readings, builds the 71
+# features, and appends them to the local CSV and the Hopsworks feature
+# store.
+#
+# The script asks each destination for its newest hour and fetches
+# everything since, so a missed run is picked up automatically by the
+# next one - no catch-up logic needed here.
+
+on:
+  schedule:
+    # Every hour, on the hour (UTC). GitHub's scheduler is best-effort:
+    # runs can be delayed or skipped when the platform is busy. That is
+    # fine, because the script collects a RANGE rather than one hour.
+    - cron: "0 * * * *"
+
+  workflow_dispatch:      # lets you trigger it by hand from the Actions tab
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Collect the latest hours
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipeline/08_hourly_collector.py
+
+      - name: Explain a failure
+        if: failure()
+        run: |
+          echo "Collection failed. Common causes:"
+          echo "  - Hopsworks free-tier quota exhausted (reads time out)"
+          echo "  - OpenWeather rate limit or expired key"
+          echo "The next scheduled run picks up any missed hours."
