@@ -1,0 +1,33 @@
+# Secrets - never commit these
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data files are regenerable from the pipeline (steps 01-04) and total
+# ~70 MB, which makes cloning slow and trips GitHub's size warnings.
+data/raw/*.csv
+data/processed/*.csv
+
+# Models live in the Hopsworks Model Registry; 09_predict.py downloads
+# the newest version automatically. The XGBoost day+1 model alone is
+# 9 MB, so keeping them out of git is deliberate rather than an
+# oversight - see the README for how to obtain them.
+models/*.pkl
+
+# Backups and scratch
+models_backup_*/
+data/processed/*_backup_*.csv
+_to_delete/
+
+# Caches and logs
+/tmp/hopsworks/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
