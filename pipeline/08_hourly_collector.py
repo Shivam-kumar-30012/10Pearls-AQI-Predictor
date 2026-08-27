@@ -204,6 +204,14 @@ def append_to_csv(fresh, csv_latest):
         print("  CSV already up to date - nothing appended")
         return 0
 
+    if not config.FEATURES_CSV.exists():
+        # First run on a fresh machine (or a CI runner). Start the file
+        # from what we just built rather than failing.
+        fresh.to_csv(config.FEATURES_CSV, index=False)
+        print("  created %s with %d rows"
+              % (config.FEATURES_CSV.name, len(fresh)))
+        return len(fresh)
+
     existing = pd.read_csv(config.FEATURES_CSV)
     existing["timestamp"] = pd.to_datetime(existing["timestamp"], utc=True)
 
@@ -335,9 +343,32 @@ def main():
         return
 
     # ---- Context for the lag features ----
-    history = pd.read_csv(config.FEATURES_CSV)
-    history["timestamp"] = pd.to_datetime(history["timestamp"], utc=True)
-    history = history.sort_values("timestamp")
+    #
+    # Prefer the local CSV: it is instant, and it is never behind the
+    # store because we write it before every upload attempt.
+    #
+    # On a GitHub Actions runner there IS no CSV - the runner is wiped
+    # after each run and data/ is gitignored - so we fall back to the
+    # feature store. That is the correct source there anyway; the CSV
+    # was always a local convenience.
+    if config.FEATURES_CSV.exists():
+        history = pd.read_csv(config.FEATURES_CSV)
+        history["timestamp"] = pd.to_datetime(history["timestamp"], utc=True)
+        history = history.sort_values("timestamp")
+        print("\n  context source: local CSV (%d rows)" % len(history))
+    else:
+        if not store_ok:
+            print("\nNo local CSV and Hopsworks is unreadable - cannot")
+            print("build lag features. Nothing written.")
+            sys.exit(1)
+        print("\n  no local CSV - reading context from Hopsworks...")
+        history = read_with_retries("context read", lambda: fg.read())
+        if history is None:
+            print("  context read failed. Nothing written.")
+            sys.exit(1)
+        history["timestamp"] = pd.to_datetime(history["timestamp"], utc=True)
+        history = history.sort_values("timestamp")
+        print("  context source: Hopsworks (%d rows)" % len(history))
 
     raw_cols = (["timestamp", "city"]
                 + build_features.POLLUTANTS + build_features.WEATHER)
