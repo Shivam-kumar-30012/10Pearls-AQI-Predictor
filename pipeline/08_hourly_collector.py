@@ -455,6 +455,21 @@ def main():
         to_upload["dominant_pollutant"] = (
             to_upload["dominant_pollutant"].fillna("unknown"))
 
+    # Match the store's column types exactly.
+    #
+    # hour/day/month come out as int32 when the context was read from
+    # Hopsworks, but int64 when it came from the CSV - pandas infers
+    # differently from each source. The feature group was created from
+    # CSV data, so it expects bigint, and a 49-row upload was rejected
+    # on the runner for exactly this.
+    for col in to_upload.columns:
+        if col == "timestamp" or col == "dominant_pollutant" or col == "city":
+            continue
+        if pd.api.types.is_integer_dtype(to_upload[col]):
+            to_upload[col] = to_upload[col].astype("int64")
+        elif pd.api.types.is_float_dtype(to_upload[col]):
+            to_upload[col] = to_upload[col].astype("float64")
+
     print("\nUploading %d rows to Hopsworks..." % len(to_upload))
     if not upload(fg, to_upload):
         print("\nUpload failed. Data is in the CSV; the next run retries.")
