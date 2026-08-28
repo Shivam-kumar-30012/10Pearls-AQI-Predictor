@@ -58,7 +58,7 @@ POLLUTION_URL = "http://api.openweathermap.org/data/2.5/air_pollution/history"
 WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
 
 CONTEXT_HOURS = 200          # one week of lags (168h) plus margin
-UPLOAD_CHUNK = 100           # rows per insert call
+UPLOAD_CHUNK = 100           # rows per insert call; 500 caused materialisation failures
 READ_RETRIES = 3
 READ_WAIT = 20               # seconds, doubles each attempt
 
@@ -460,10 +460,13 @@ def main():
     # hour/day/month come out as int32 when the context was read from
     # Hopsworks, but int64 when it came from the CSV - pandas infers
     # differently from each source. The feature group was created from
-    # CSV data, so it expects bigint, and a 49-row upload was rejected
-    # on the runner for exactly this.
+    # CSV data, so it expects bigint, and an upload was rejected on the
+    # runner with "expected type: 'bigint', derived from input: 'int'".
+    #
+    # Forcing the widest numeric types makes the upload identical
+    # whichever source the context came from.
     for col in to_upload.columns:
-        if col == "timestamp" or col == "dominant_pollutant" or col == "city":
+        if col in ("timestamp", "dominant_pollutant", "city"):
             continue
         if pd.api.types.is_integer_dtype(to_upload[col]):
             to_upload[col] = to_upload[col].astype("int64")

@@ -1,48 +1,47 @@
 """
-EXPERIMENT - Delta-target models
+PIPELINE STEP 06b - Delta-target model (day +1)
 
-Separate from the main pipeline. Everything it writes is prefixed
-`delta_`, so deleting those files returns the project to its current
-state. 06_train.py and the registered v2 models are untouched.
+Trains a model that predicts the CHANGE in AQI rather than its level,
+and saves it as delta_model_day1.pkl. Step 07 registers whichever file
+each horizon actually uses.
 
-The problem this addresses
---------------------------
-The current models produce almost flat forecasts: about a 5-point swing
-across 24 hours. The real data moves far more than that:
+Why a delta target
+------------------
+The absolute models produced almost flat forecasts - about a 5-point
+swing across 24 hours, where the real data moves 11 or more. The cause
+is that Ridge minimises squared error and aqi_lag_1h correlates ~1.0
+with the target, so predicting close to the current value is the safest
+way to keep RMSE low. The model optimises the metric at the cost of
+being useful.
 
-    median 24h change      14 points
-    median daily swing     18 points
-    last 72 hours          92 -> 131 -> 108  (39 points)
+Predicting the change removes that hiding place: "about the same as
+now" becomes zero, so the model has to commit to a direction and a
+size. At prediction time the current AQI is added back.
 
-So the models under-react. The cause is that Ridge minimises squared
-error, and aqi_lag_1h correlates ~1.0 with the target - so predicting
-close to the current value is the safest way to keep RMSE low. The
-model optimises the metric at the cost of being useful. This is
-regression to the mean.
+What actually happened
+----------------------
+Only day +1 benefits. XGBoost on the delta target scored R2 0.9317
+against 0.9296 for absolute Ridge, with MAE down from 10.15 to 8.28
+and swing up from 5 to 7.8.
 
-What this tries instead
------------------------
-Predict the CHANGE from the current AQI rather than the level:
+Days 2 and 3 do not. For a LINEAR model, predicting (y - x) with x
+among the features is mathematically equivalent to predicting y, so
+Ridge scored identically either way (0.7158 vs 0.7158). XGBoost was
+clearly worse at those horizons (0.61 and 0.48). They keep their
+absolute models.
 
-    target = aqi(t + h) - aqi(t)
-
-Then add the current AQI back at prediction time. The model can no
-longer hedge toward "about the same as now", because "the same" is now
-zero - it has to commit to a direction and a size.
-
-Note: an earlier session tried a delta target and got R2 0.16. That was
-on the CORRUPTED AQI, where the target had spurious 500s injected into
-it, so the test was invalid. Worth retrying on the correct target.
+An earlier session tried a delta target and got R2 0.16, concluding it
+was hopeless. That was on the CORRUPTED AQI, where the target had
+spurious 500s in it, so the test was invalid.
 
 How it is judged
 ----------------
-R2 alone will not answer this, because the current models score well
-while under-reacting. So we also measure SWING - how much the
-predictions move across a block compared with how much reality moves.
-A model that scores slightly lower but swings realistically is the
-better forecaster.
+R2 alone cannot answer this, because the absolute models score well
+while under-reacting. So SWING is also measured - how far predictions
+move across a block compared with how far reality moves.
 
 Run:  python pipeline/06b_train_delta.py
+      python pipeline/06b_train_delta.py --local
 """
 
 import json
@@ -67,12 +66,62 @@ HORIZONS = {1: (1, 24), 2: (25, 48), 3: (49, 72)}
 INTERACT_WITH = ["aqi", "aqi_trend_24h", "aqi_trend_72h",
                  "aqi_roll_std_1d", "aqi_vs_7d"]
 
+# Below this, something is wrong with the data source and training
+# would produce a worse model than the one already registered.
+MIN_ROWS = 5000
+
 
 def load_data():
-    """Local CSV - this is an experiment, no need for the store."""
-    df = pd.read_csv(config.FEATURES_CSV)
+    """
+    Read the features, preferring whichever source is FRESHEST.
+
+    Same logic as 06_train.py. This originally read the CSV directly,
+    which failed on a GitHub runner where data/ is gitignored.
+    """
+    source = None
+
+    if "--local" in sys.argv:
+        print("--local flag: reading the local CSV")
+        df = pd.read_csv(config.FEATURES_CSV)
+        source = "local CSV (forced)"
+    else:
+        try:
+            import hopsworks
+            print("Reading from Hopsworks feature store...")
+            project = hopsworks.login(api_key_value=config.HOPSWORKS_API_KEY)
+            group = project.get_feature_store().get_feature_group(
+                config.FEATURE_GROUP_NAME,
+                version=config.FEATURE_GROUP_VERSION)
+            df = group.read()
+            source = "Hopsworks %s v%d" % (config.FEATURE_GROUP_NAME,
+                                           config.FEATURE_GROUP_VERSION)
+        except Exception as error:
+            print("  Hopsworks read failed: %s" % type(error).__name__)
+            if not config.FEATURES_CSV.exists():
+                print("  No local CSV either. Cannot train.")
+                sys.exit(1)
+            print("  Falling back to the local CSV.")
+            df = pd.read_csv(config.FEATURES_CSV)
+            source = "local CSV (Hopsworks unreachable)"
+
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
     df = df.sort_values("timestamp").reset_index(drop=True)
+
+    if source.startswith("Hopsworks") and config.FEATURES_CSV.exists():
+        local = pd.read_csv(config.FEATURES_CSV)
+        local["timestamp"] = pd.to_datetime(local["timestamp"], utc=True)
+        # A newer timestamp is not enough on its own. On a CI runner the
+        # collector creates the CSV from scratch, so it holds only the
+        # few hours it just fetched - "ahead" in time while containing
+        # 0.1% of the data. A run once trained on 42 rows this way.
+        # Require it to be at least as complete as the store too.
+        if (local["timestamp"].max() > df["timestamp"].max()
+                and len(local) >= len(df)):
+            print("  Local CSV is ahead of the store - using it")
+            df = local.sort_values("timestamp").reset_index(drop=True)
+            source = "local CSV (ahead of store)"
+
+    print("\nDATA SOURCE: %s" % source)
     print("Loaded %d rows | %s -> %s\n"
           % (len(df), df.timestamp.min().date(), df.timestamp.max().date()))
     return df
@@ -88,8 +137,8 @@ def make_training_data(df, feature_names, first_hour, last_hour):
     Same expansion as the main script, but the answer is the CHANGE
     from the current AQI rather than the future AQI itself.
 
-    We also return current_aqi for each example, so predictions can be
-    converted back to absolute AQI for a fair comparison.
+    current_aqi is returned as well, so predictions can be converted
+    back to absolute AQI and compared on the same scale.
     """
     features = df[feature_names].to_numpy(dtype=np.float32)
     aqi = df["aqi"].to_numpy(dtype=np.float32)
@@ -106,7 +155,7 @@ def make_training_data(df, feature_names, first_hour, last_hour):
         X = features[:usable]
         current = aqi[:usable]
         future = aqi[hours_ahead:hours_ahead + usable]
-        delta = future - current          # <-- the change, not the level
+        delta = future - current          # the change, not the level
 
         complete = ~np.isnan(X).any(axis=1) & ~np.isnan(delta)
 
@@ -134,20 +183,17 @@ def make_training_data(df, feature_names, first_hour, last_hour):
 
 def swing_check(predicted_aqi, actual_aqi, hours, rows):
     """
-    How much do the predictions move across a 24-hour block, compared
-    with how much reality moves?
+    How far do the predictions move across a 24-hour block, compared
+    with how far reality moves?
 
-    This is the metric that matters here. R2 rewards staying close to
-    the current value, so a model can score well while producing a flat
-    line. Swing measures whether it actually commits.
+    R2 rewards staying close to the current value, so a model can score
+    well while drawing a flat line. Swing measures whether it commits.
     """
-    df = pd.DataFrame({"row": rows, "hour": hours,
-                       "pred": predicted_aqi, "actual": actual_aqi})
-    # Group by source row: each group is one 24-hour forecast block
-    g = df.groupby("row")
-    pred_swing = (g["pred"].max() - g["pred"].min())
-    actual_swing = (g["actual"].max() - g["actual"].min())
-    return pred_swing.median(), actual_swing.median()
+    d = pd.DataFrame({"row": rows, "hour": hours,
+                      "pred": predicted_aqi, "actual": actual_aqi})
+    g = d.groupby("row")          # each group is one 24-hour forecast
+    return ((g["pred"].max() - g["pred"].min()).median(),
+            (g["actual"].max() - g["actual"].min()).median())
 
 
 def measure(name, actual, predicted, seconds=None):
@@ -181,16 +227,13 @@ def train_one(df, day, feature_names):
     cur_te = current[te]
     hours_te, rows_te = hours[te], rows[te]
 
-    # The true future AQI, for comparing on the same scale as the
-    # main models
+    # The true future AQI, so scores compare with the absolute models
     y_abs_te = cur_te + yd_te
 
     print("  train %d | test %d\n" % (len(yd_tr), len(yd_te)))
 
     scores = []
-
     print("  Baseline:")
-    # Persistence means predicting zero change
     scores.append(measure("Persistence", y_abs_te, cur_te))
 
     print("\n  Delta models (converted back to absolute AQI):")
@@ -206,21 +249,17 @@ def train_one(df, day, feature_names):
     for name, algo in algorithms.items():
         t0 = time.time()
         algo.fit(X_tr, yd_tr)
-        pred_delta = algo.predict(X_te)
-        pred_abs = cur_te + pred_delta          # convert back
+        pred_abs = cur_te + algo.predict(X_te)      # convert back
         scores.append(measure(name, y_abs_te, pred_abs, time.time() - t0))
         trained[name] = algo
         predictions[name] = pred_abs
 
-    # ---- The swing comparison ----
     print("\n  SWING across each 24-hour block (median):")
-    _, actual_swing = swing_check(predictions[list(predictions)[0]],
+    _, actual_swing = swing_check(list(predictions.values())[0],
                                   y_abs_te, hours_te, rows_te)
     print("    %-22s %6.1f AQI  <- what really happens" % ("Actual", actual_swing))
-
     pers_swing, _ = swing_check(cur_te, y_abs_te, hours_te, rows_te)
     print("    %-22s %6.1f AQI" % ("Persistence", pers_swing))
-
     for name in predictions:
         s, _ = swing_check(predictions[name], y_abs_te, hours_te, rows_te)
         print("    %-22s %6.1f AQI" % (name, s))
@@ -230,7 +269,7 @@ def train_one(df, day, feature_names):
 
     winner = table.iloc[0]["model"]
     if winner == "Persistence":
-        print("\n  No delta model beat the baseline.")
+        print("\n  No delta model beat the baseline. Nothing saved.")
         return None
 
     best_swing, _ = swing_check(predictions[winner], y_abs_te, hours_te, rows_te)
@@ -255,6 +294,16 @@ def train_one(df, day, feature_names):
 
 def main():
     df = load_data()
+
+    # A run once trained on 42 rows because the CI runner's freshly
+    # created CSV looked "newer" than the store. The resulting models
+    # scored R2 -0.17 and were nearly registered over the good ones.
+    if len(df) < MIN_ROWS:
+        print("Only %d rows available - refusing to train." % len(df))
+        print("Something is wrong with the data source. The currently")
+        print("registered models stay live.")
+        sys.exit(1)
+
     skip = {"timestamp", "city", "dominant_pollutant"}
     feature_names = [c for c in df.select_dtypes(include=[np.number]).columns
                      if c not in skip]
@@ -275,26 +324,25 @@ def main():
         json.dump(results, f, indent=2)
 
     print("=" * 62)
-    print("COMPARISON WITH CURRENT MODELS")
+    print("COMPARISON WITH THE ABSOLUTE MODELS")
     print("=" * 62)
 
-    current_path = config.MODELS_DIR / "metrics.json"
-    current = json.loads(current_path.read_text()) if current_path.exists() else {}
+    path = config.MODELS_DIR / "metrics.json"
+    absolute = json.loads(path.read_text()) if path.exists() else {}
 
-    print("  %-6s %-12s %-12s %-10s %-10s" %
-          ("", "R2 now", "R2 delta", "swing", "actual"))
+    print("  %-6s %-12s %-12s %-10s %-10s"
+          % ("", "R2 abs", "R2 delta", "swing", "actual"))
     for key in ["day1", "day2", "day3"]:
         if key not in results:
             continue
-        now_r2 = current.get(key, {}).get("r2", float("nan"))
+        abs_r2 = absolute.get(key, {}).get("r2", float("nan"))
         print("  %-6s %-12.4f %-12.4f %-10.1f %-10.1f"
-              % (key, now_r2, results[key]["r2"],
+              % (key, abs_r2, results[key]["r2"],
                  results[key]["predicted_swing"],
                  results[key]["actual_swing"]))
 
-    print("\nKeep the delta models only if they swing realistically AND")
-    print("hold R2 close to the current ones. Nothing has been replaced -")
-    print("the files are all prefixed delta_.")
+    print("\nStep 07 registers the delta model for day +1 only; days 2 and 3")
+    print("keep their absolute models, which scored better there.")
 
 
 if __name__ == "__main__":
