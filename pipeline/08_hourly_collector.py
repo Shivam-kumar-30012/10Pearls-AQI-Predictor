@@ -58,7 +58,7 @@ POLLUTION_URL = "http://api.openweathermap.org/data/2.5/air_pollution/history"
 WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
 
 CONTEXT_HOURS = 200          # one week of lags (168h) plus margin
-UPLOAD_CHUNK = 500           # rows per insert call
+UPLOAD_CHUNK = 100           # rows per insert call
 READ_RETRIES = 3
 READ_WAIT = 20               # seconds, doubles each attempt
 
