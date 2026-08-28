@@ -11,3 +11,4 @@ plotly
 shap
 matplotlib
 seaborn
+confluent-kafka
