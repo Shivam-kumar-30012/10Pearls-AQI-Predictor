@@ -67,54 +67,12 @@ HORIZONS = {1: (1, 24), 2: (25, 48), 3: (49, 72)}
 INTERACT_WITH = ["aqi", "aqi_trend_24h", "aqi_trend_72h",
                  "aqi_roll_std_1d", "aqi_vs_7d"]
 
+
 def load_data():
-    """
-    Read the features, preferring whichever source is FRESHEST.
-
-    This was written as a local experiment and originally read the CSV
-    directly. On a GitHub runner there is no CSV - the runner is wiped
-    each run and data/ is gitignored - so it needs the same Hopsworks
-    path as 06_train.py.
-    """
-    source = None
-
-    if "--local" in sys.argv:
-        print("--local flag: reading the local CSV")
-        df = pd.read_csv(config.FEATURES_CSV)
-        source = "local CSV (forced)"
-    else:
-        try:
-            import hopsworks
-            print("Reading from Hopsworks feature store...")
-            project = hopsworks.login(api_key_value=config.HOPSWORKS_API_KEY)
-            group = project.get_feature_store().get_feature_group(
-                config.FEATURE_GROUP_NAME,
-                version=config.FEATURE_GROUP_VERSION)
-            df = group.read()
-            source = "Hopsworks %s v%d" % (config.FEATURE_GROUP_NAME,
-                                           config.FEATURE_GROUP_VERSION)
-        except Exception as error:
-            print("  Hopsworks read failed: %s" % type(error).__name__)
-            if not config.FEATURES_CSV.exists():
-                print("  No local CSV either. Cannot train.")
-                sys.exit(1)
-            print("  Falling back to the local CSV.")
-            df = pd.read_csv(config.FEATURES_CSV)
-            source = "local CSV (Hopsworks unreachable)"
-
+    """Local CSV - this is an experiment, no need for the store."""
+    df = pd.read_csv(config.FEATURES_CSV)
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
     df = df.sort_values("timestamp").reset_index(drop=True)
-
-    # The CSV can be ahead of the store when an upload failed
-    if source.startswith("Hopsworks") and config.FEATURES_CSV.exists():
-        local = pd.read_csv(config.FEATURES_CSV)
-        local["timestamp"] = pd.to_datetime(local["timestamp"], utc=True)
-        if local["timestamp"].max() > df["timestamp"].max():
-            print("  Local CSV is ahead of the store - using it")
-            df = local.sort_values("timestamp").reset_index(drop=True)
-            source = "local CSV (ahead of store)"
-
-    print("\nDATA SOURCE: %s" % source)
     print("Loaded %d rows | %s -> %s\n"
           % (len(df), df.timestamp.min().date(), df.timestamp.max().date()))
     return df

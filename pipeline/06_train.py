@@ -98,10 +98,13 @@ def load_data():
     if source.startswith("Hopsworks") and config.FEATURES_CSV.exists():
         local = pd.read_csv(config.FEATURES_CSV)
         local["timestamp"] = pd.to_datetime(local["timestamp"], utc=True)
-        if local["timestamp"].max() > df["timestamp"].max():
-            behind = local["timestamp"].max() - df["timestamp"].max()
-            print("  Local CSV is %.0f hours ahead of the store - using it"
-                  % (behind.total_seconds() / 3600))
+        # A newer timestamp is not enough. On a CI runner the CSV is
+        # created fresh by the collector and holds only a few hours, so
+        # it can be "ahead" while containing 0.1% of the data. Require
+        # it to be at least as complete as the store as well.
+        if (local["timestamp"].max() > df["timestamp"].max()
+                and len(local) >= len(df)):
+            print("  Local CSV is ahead of the store - using it")
             df = local.sort_values("timestamp").reset_index(drop=True)
             source = "local CSV (ahead of store)"
 
@@ -365,6 +368,13 @@ def train_one_horizon(df, day, feature_names):
 
 def main():
     df = load_data()
+
+
+    if len(df) < 5000:
+        print("\nOnly %d rows available - refusing to train." % len(df))
+        print("Something is wrong with the data source. The currently")
+        print("registered models stay live.")
+        sys.exit(1)
 
     # Use every numeric column as a feature, except the ones that
     # aren't really data (text and identifiers).
