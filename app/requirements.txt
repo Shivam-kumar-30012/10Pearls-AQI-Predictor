@@ -1,0 +1,14 @@
+# Requirements for the deployed dashboard only.
+#
+# The pipeline's dependencies (hopsworks, xgboost, shap, matplotlib,
+# seaborn, confluent-kafka) are not listed here on purpose. They are
+# needed by the GitHub Actions workflows, not by the dashboard, and
+# confluent-kafka has no wheel for the Python version Streamlit Cloud
+# runs - which is what broke the first deploy.
+#
+# The dashboard reads data/dashboard_snapshot.json, regenerated nightly
+# by the training workflow, so it needs nothing beyond these four.
+streamlit
+plotly
+pandas
+numpy
