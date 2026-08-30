@@ -12,7 +12,7 @@ venv/
 # ~70 MB, which makes cloning slow and trips GitHub's size warnings.
 data/raw/*.csv
 data/processed/*.csv
-
+!data/dashboard_snapshot.json
 # Models live in the Hopsworks Model Registry; 09_predict.py downloads
 # the newest version automatically. The XGBoost day+1 model alone is
 # 9 MB, so keeping them out of git is deliberate rather than an

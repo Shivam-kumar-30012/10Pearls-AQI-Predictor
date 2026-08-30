@@ -292,7 +292,24 @@ def read_snapshot():
 
 
 def read_live():
-    """Called only from the sidebar button - the store read is slow."""
+    """
+    Read straight from the feature store. Called only from the sidebar
+    button, because it is slow.
+
+    Deployed builds install app/requirements.txt, which deliberately
+    leaves hopsworks out: it depends on confluent-kafka, which has no
+    wheel for the Python version Streamlit Cloud runs, and the dashboard
+    does not need it. So this path works locally and is skipped when
+    deployed - there, the nightly snapshot is the whole data source.
+    """
+    try:
+        import hopsworks  # noqa: F401
+    except ImportError:
+        st.info("Live fetch is available when running locally. This "
+                "deployment reads the snapshot, refreshed nightly by the "
+                "training workflow.")
+        return None
+
     try:
         import importlib
         predict = importlib.import_module("09_predict")
