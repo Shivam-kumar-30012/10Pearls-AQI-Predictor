@@ -1,20 +1,25 @@
 name: Daily model training
 
-# Retrains all three forecast models and registers them in the
-# Hopsworks Model Registry as a new version.
+# Retrains all three forecast models, registers them, and refreshes the
+# dashboard snapshot.
 #
-# Three training steps run, not two:
-#   06_train.py        -> the absolute models (days 2 and 3)
-#   06b_train_delta.py -> the delta model (day 1)
-#   07_register_models -> uploads whichever file each horizon uses
+# Five steps, in this order:
+#   08_hourly_collector   -> bring the store up to date first
+#   06_train              -> the absolute models (days 2 and 3)
+#   06b_train_delta       -> the delta model (day 1)
+#   07_register_models    -> upload whichever file each horizon uses
+#   10_build_snapshot     -> regenerate the dashboard data, then commit
 #
-# Without 06b, day+1's model would go stale while days 2 and 3 kept
-# updating - the prediction script uses the delta model for day 1.
+# The snapshot step matters for deployment. Streamlit Cloud serves from
+# the repo, so the dashboard reads a committed JSON file rather than
+# calling Hopsworks on every page load - that would take 30-60 seconds
+# when the store is healthy and time out entirely when the free-tier
+# quota is spent. Committing the snapshot here keeps the deployed
+# dashboard current without making visitors wait.
 
 on:
   schedule:
-    # 02:00 UTC = 07:00 Pakistan time. After several hourly collections
-    # have run, so the models train on fresh data.
+    # 02:00 UTC = 07:00 Pakistan time, after several hourly collections
     - cron: "0 2 * * *"
 
   workflow_dispatch:
@@ -22,8 +27,10 @@ on:
 jobs:
   train:
     runs-on: ubuntu-latest
-    # Training is ~15 min, plus the Hopsworks read and three uploads.
     timeout-minutes: 60
+    permissions:
+      # Needed to push the snapshot commit back to the repo
+      contents: write
 
     steps:
       - name: Check out the repository
@@ -44,10 +51,8 @@ jobs:
         env:
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        # Bring the store up to date before training, so the models
-        # never train on a store that fell behind because an hourly
-        # upload failed. Non-blocking: if this fails, training still
-        # runs and falls back to the local CSV.
+        # Non-blocking: if collection fails, training still runs on
+        # whatever the store already holds.
         continue-on-error: true
         run: python pipeline/08_hourly_collector.py
 
@@ -66,10 +71,28 @@ jobs:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: python pipeline/07_register_models.py
 
+      - name: Rebuild the dashboard snapshot
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipeline/10_build_snapshot.py
+
+      - name: Commit the snapshot back to the repo
+        # -f is needed because data/ is gitignored; the snapshot is the
+        # one file in there we deliberately track.
+        # [skip ci] stops this commit triggering another workflow run.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/dashboard_snapshot.json
+          if git diff --staged --quiet; then
+            echo "Snapshot unchanged - nothing to commit."
+          else
+            git commit -m "Update dashboard snapshot [skip ci]"
+            git push
+            echo "Snapshot committed."
+          fi
+
       - name: Upload metrics as a build artifact
-        # The runner is wiped after each run, so this keeps a record of
-        # every run's scores. Downloadable from the Actions tab, and
-        # useful for spotting performance drift over time.
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -86,5 +109,5 @@ jobs:
           echo "Training failed. Common causes:"
           echo "  - Hopsworks free-tier quota exhausted"
           echo "  - Not enough new data since the last run"
-          echo "The previously registered model version stays live, so"
-          echo "the dashboard keeps working."
+          echo "The previously registered models stay live, and the"
+          echo "dashboard keeps serving the last good snapshot."
