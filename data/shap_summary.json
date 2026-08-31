@@ -1,0 +1,295 @@
+{
+ "generated_at": "2026-08-31T10:24:12.548173+00:00",
+ "explained_from": "2026-08-26T20:00:00+00:00",
+ "current_aqi": 100,
+ "horizons": {
+  "day1": {
+   "model": "XGBoost (delta)",
+   "hours_ahead": 12,
+   "global_importance": {
+    "pm2_5": 3.442936420440674,
+    "aqi_trend_6h": 1.8343383073806763,
+    "temp_range_24h": 1.8101190328598022,
+    "aqi_lag_1h": 1.691659927368164,
+    "aqi_lag_3h": 1.2665107250213623,
+    "pm10": 1.2619895935058594,
+    "temperature_roll_24h": 0.825054943561554,
+    "pm2_5_lag_24h": 0.8016562461853027,
+    "pressure_roll_24h": 0.7805049419403076,
+    "aqi_roll_min_1d": 0.7605141401290894,
+    "hour_cos": 0.6428819298744202,
+    "aqi_vs_7d_x_hours": 0.6377885937690735
+   },
+   "current_explanation": {
+    "base": -0.33,
+    "prediction": -10.24,
+    "top": [
+     {
+      "feature": "pm2_5",
+      "label": "PM2.5",
+      "value": 28.52,
+      "contribution": -5.39
+     },
+     {
+      "feature": "aqi_trend_6h",
+      "label": "6 h trend",
+      "value": -9.0,
+      "contribution": -3.17
+     },
+     {
+      "feature": "temp_range_24h",
+      "label": "24 h temperature range",
+      "value": 10.6,
+      "contribution": -2.0
+     },
+     {
+      "feature": "aqi_lag_1h",
+      "label": "AQI 1 h ago",
+      "value": 102.0,
+      "contribution": 1.52
+     },
+     {
+      "feature": "aqi_lag_3h",
+      "label": "AQI 3 h ago",
+      "value": 105.0,
+      "contribution": 1.43
+     },
+     {
+      "feature": "pm10",
+      "label": "PM10",
+      "value": 115.66,
+      "contribution": -0.91
+     },
+     {
+      "feature": "pm2_5_lag_24h",
+      "label": "pm2 5 lag 24h",
+      "value": 41.85,
+      "contribution": -0.8
+     },
+     {
+      "feature": "pressure_roll_24h",
+      "label": "pressure roll 24h",
+      "value": 1001.75,
+      "contribution": -0.76
+     },
+     {
+      "feature": "day",
+      "label": "day",
+      "value": 26.0,
+      "contribution": 0.75
+     },
+     {
+      "feature": "pm10_roll_24h",
+      "label": "pm10 roll 24h",
+      "value": 147.85,
+      "contribution": 0.71
+     },
+     {
+      "feature": "o3_roll_24h",
+      "label": "o3 roll 24h",
+      "value": 63.88,
+      "contribution": 0.71
+     },
+     {
+      "feature": "aqi_roll_min_1d",
+      "label": "aqi roll min 1d",
+      "value": 100.0,
+      "contribution": 0.65
+     }
+    ]
+   }
+  },
+  "day2": {
+   "model": "Ridge",
+   "hours_ahead": 36,
+   "global_importance": {
+    "aqi_lag_1h": 26.31620800571403,
+    "aqi": 7.956910886459134,
+    "aqi_lag_6h": 7.46098895393322,
+    "aqi_vs_7d": 6.56645893514052,
+    "aqi_roll_mean_7d": 5.007265350074555,
+    "aqi_roll_mean_1d": 4.984002604978353,
+    "aqi_vs_7d_x_hours": 4.831520284646404,
+    "aqi_lag_24h": 4.830627080807328,
+    "aqi_trend_24h": 4.650300802300202,
+    "aqi_lag_3h": 4.427773871139779,
+    "pm10_roll_24h": 4.376375972764446,
+    "aqi_lag_72h": 4.186390349630034
+   },
+   "current_explanation": {
+    "base": 95.38,
+    "prediction": 100.89,
+    "top": [
+     {
+      "feature": "aqi_lag_1h",
+      "label": "AQI 1 h ago",
+      "value": 102.0,
+      "contribution": -20.82
+     },
+     {
+      "feature": "aqi_trend_24h",
+      "label": "24 h trend",
+      "value": -29.0,
+      "contribution": -12.27
+     },
+     {
+      "feature": "aqi_lag_24h",
+      "label": "AQI 24 h ago",
+      "value": 129.0,
+      "contribution": 11.61
+     },
+     {
+      "feature": "aqi_lag_6h",
+      "label": "AQI 6 h ago",
+      "value": 109.0,
+      "contribution": 9.02
+     },
+     {
+      "feature": "aqi_roll_mean_1d",
+      "label": "AQI, 1-day mean",
+      "value": 113.08,
+      "contribution": -7.49
+     },
+     {
+      "feature": "aqi",
+      "label": "AQI now",
+      "value": 100.0,
+      "contribution": 5.38
+     },
+     {
+      "feature": "pm10_roll_24h",
+      "label": "pm10 roll 24h",
+      "value": 147.85,
+      "contribution": 5.0
+     },
+     {
+      "feature": "aqi_lag_3h",
+      "label": "AQI 3 h ago",
+      "value": 105.0,
+      "contribution": 4.3
+     },
+     {
+      "feature": "aqi_trend_6h",
+      "label": "6 h trend",
+      "value": -9.0,
+      "contribution": -4.1
+     },
+     {
+      "feature": "aqi_roll_mean_7d",
+      "label": "AQI, 7-day mean",
+      "value": 94.55,
+      "contribution": 3.72
+     },
+     {
+      "feature": "aqi_roll_max_1d",
+      "label": "aqi roll max 1d",
+      "value": 127.0,
+      "contribution": 2.98
+     },
+     {
+      "feature": "aqi_roll_std_7d",
+      "label": "aqi roll std 7d",
+      "value": 19.09,
+      "contribution": 2.76
+     }
+    ]
+   }
+  },
+  "day3": {
+   "model": "Ridge",
+   "hours_ahead": 60,
+   "global_importance": {
+    "aqi_lag_1h": 9.895476865290277,
+    "aqi_roll_mean_7d": 4.554890913693717,
+    "aqi": 4.044861472053297,
+    "aqi_lag_6h": 3.8005524900128584,
+    "pm10_roll_24h": 3.7709420541693404,
+    "aqi_trend_72h": 3.1164024192582906,
+    "aqi_trend_24h": 3.067408027642003,
+    "aqi_trend_72h_x_hours": 3.063105237999218,
+    "aqi_roll_mean_1d": 3.054936374636475,
+    "temp_range_24h": 2.872965660477199,
+    "temperature_roll_24h": 2.7186043673406672,
+    "aqi_trend_24h_x_hours": 2.5977213000739163
+   },
+   "current_explanation": {
+    "base": 95.47,
+    "prediction": 102.95,
+    "top": [
+     {
+      "feature": "aqi_trend_24h",
+      "label": "24 h trend",
+      "value": -29.0,
+      "contribution": -8.09
+     },
+     {
+      "feature": "aqi_lag_1h",
+      "label": "AQI 1 h ago",
+      "value": 102.0,
+      "contribution": -7.83
+     },
+     {
+      "feature": "aqi_trend_24h_x_hours",
+      "label": "24 h trend x lead time",
+      "value": -1740.0,
+      "contribution": 6.86
+     },
+     {
+      "feature": "aqi_lag_24h",
+      "label": "AQI 24 h ago",
+      "value": 129.0,
+      "contribution": 4.78
+     },
+     {
+      "feature": "aqi_lag_6h",
+      "label": "AQI 6 h ago",
+      "value": 109.0,
+      "contribution": 4.6
+     },
+     {
+      "feature": "aqi_roll_mean_1d",
+      "label": "AQI, 1-day mean",
+      "value": 113.08,
+      "contribution": -4.59
+     },
+     {
+      "feature": "pm10_roll_24h",
+      "label": "pm10 roll 24h",
+      "value": 147.85,
+      "contribution": 4.31
+     },
+     {
+      "feature": "aqi_roll_mean_3d",
+      "label": "AQI, 3-day mean",
+      "value": 114.56,
+      "contribution": -4.08
+     },
+     {
+      "feature": "aqi_roll_mean_7d",
+      "label": "AQI, 7-day mean",
+      "value": 94.55,
+      "contribution": 3.38
+     },
+     {
+      "feature": "aqi_roll_std_1d",
+      "label": "AQI volatility, 1 day",
+      "value": 7.18,
+      "contribution": 3.15
+     },
+     {
+      "feature": "aqi_range_1d",
+      "label": "daily AQI range",
+      "value": 27.0,
+      "contribution": -3.04
+     },
+     {
+      "feature": "aqi",
+      "label": "AQI now",
+      "value": 100.0,
+      "contribution": 2.73
+     }
+    ]
+   }
+  }
+ }
+}

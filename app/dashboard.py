@@ -24,6 +24,7 @@ for minutes at a time, and because Streamlit blocks on the call, that
 froze the whole page. Reading a committed file cannot fail.
 """
 
+import base64
 import json
 import sys
 from pathlib import Path
@@ -38,37 +39,38 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "pipeline"))
 
 SNAPSHOT = ROOT / "data" / "dashboard_snapshot.json"
+FIGURES = ROOT / "notebooks" / "figures"
+SHAP_SUMMARY = ROOT / "data" / "shap_summary.json"
 
 st.set_page_config(page_title="10Pearls AQI Predictor", page_icon="◐",
                    layout="wide", initial_sidebar_state="expanded")
 
-# The 10Pearls mark as SVG, so it inherits the theme colour and stays
-# sharp at any size. A filled disc holds the outlined "1"; the "0" is a
-# ring whose outer edge breaks past the disc's right side, which is what
-# makes the mark recognisable.
-# The 10Pearls mark as SVG, so it inherits the theme colour and stays
-# sharp at any size.
+# The official 10Pearls logo, embedded as base64 so it travels with the
+# repo and needs no separate static-file serving.
 #
-# Geometry: a filled disc holds the outlined "1"; a knockout circle
-# carves the dark gap; the ring on top forms the "0" and breaks past the
-# disc's right edge, which is what makes the mark recognisable.
-#
-# No HTML comments inside the string - Streamlit's markdown sanitiser
-# strips them and mangles the surrounding tags, which left the SVG
-# rendering as the bare word "Pearls".
-LOGO_SVG = ("""<svg class="logo" viewBox="0 0 236 64" """
-            """xmlns="http://www.w3.org/2000/svg" role="img" """
-            """aria-label="10Pearls">"""
-            """<circle cx="33" cy="32" r="29" fill="var(--tx)"/>"""
-            """<path d="M18 20 L27 14 L27 50 L18 50 Z" fill="none" """
-            """stroke="var(--bg)" stroke-width="3.4"/>"""
-            """<circle cx="57" cy="32" r="26" fill="var(--bg)"/>"""
-            """<circle cx="57" cy="32" r="20" fill="none" """
-            """stroke="var(--tx)" stroke-width="11"/>"""
-            """<text x="90" y="46" font-family="Inter,Segoe UI,Helvetica,"""
-            """Arial,sans-serif" font-size="42" font-weight="700" """
-            """letter-spacing="-1.4" fill="var(--tx)">Pearls</text>"""
-            """</svg>""")
+# Two variants, because the supplied artwork is black on a WHITE
+# background - dropped straight into the dark theme it showed as a white
+# box. The build step below turns the white into transparency (deriving
+# alpha from pixel darkness, so antialiased edges stay smooth) and
+# recolours the ink: near-black for the light theme, white for the dark
+# one. Picking a file beats a CSS invert filter, which tends to render
+# grey rather than a clean white.
+@st.cache_data(show_spinner=False)
+def logo_tag(dark):
+    """
+    Cached because the encoding ran on every rerun - every theme switch,
+    every view change, every radio click - and re-reading plus encoding
+    15 KB each time was enough to feel like a lag. Streamlit caches per
+    argument, so both variants are built once.
+    """
+    name = "logo_dark.png" if dark else "logo_light.png"
+    path = ROOT / "app" / "assets" / name
+    if not path.exists():
+        return '<div class="logo-fallback">10Pearls</div>'
+    data = base64.b64encode(path.read_bytes()).decode()
+    return ('<img class="logo" alt="10Pearls" '
+            'src="data:image/png;base64,%s">' % data)
+
 
 CATEGORY_DOT = {
     "Good": "#5dcaa5", "Moderate": "#e0c060",
@@ -114,7 +116,29 @@ def inject_css(dark):
     [data-testid="stSidebar"] * {{ color:var(--tx); }}
     /* Sits high and reads large, like the Claude sidebar wordmark */
     [data-testid="stSidebar"] > div:first-child {{ padding-top:.55rem; }}
-    .logo {{ width:172px; height:auto; display:block; margin:0 0 7px 1px; }}
+    /* The logo is re-encoded and re-inserted on every theme switch, so
+       there is a brief flash as the browser swaps the image. A short
+       fade-and-lift on arrival turns that into an intentional
+       transition rather than a stutter. */
+    .logo {{ width:168px; height:auto; display:block; margin:2px 0 9px 1px;
+             animation: logo-in .42s cubic-bezier(.22,1,.36,1) both; }}
+    @keyframes logo-in {{
+      from {{ opacity:0; transform:translateY(-5px) scale(.96); filter:blur(3px); }}
+      to   {{ opacity:1; transform:translateY(0)   scale(1);   filter:blur(0);   }} }}
+    .logo-fallback {{ font-size:24px; font-weight:700; letter-spacing:-1px;
+                      margin:2px 0 9px 1px; }}
+
+    /* The rest of the sidebar settles in behind it, staggered, so the
+       whole panel reads as one movement instead of several. */
+    .logo-sub {{ animation: rise .4s ease-out both .06s; }}
+    .logo-loc {{ animation: rise .4s ease-out both .11s; }}
+    [data-testid="stSidebar"] div[role="radiogroup"] {{
+      animation: rise .4s ease-out both .14s; }}
+
+    /* Cross-fade the whole page on a theme change. Without it the
+       palette snaps, which reads as a glitch next to the logo fading. */
+    .stApp {{ animation: theme-in .3s ease-out both; }}
+    @keyframes theme-in {{ from {{ opacity:.55; }} to {{ opacity:1; }} }}
     .logo-sub {{ font-size:11px; color:var(--dm); letter-spacing:1.4px;
                  margin:0 0 3px 3px; }}
     .logo-loc {{ font-size:11px; color:var(--ft); margin:0 0 24px 3px; }}
@@ -179,6 +203,34 @@ def inject_css(dark):
     [data-testid="column"]:nth-child(3) .card {{ animation-delay:.13s; }}
     [data-testid="column"]:nth-child(4) .card {{ animation-delay:.19s; }}
 
+    /* ---- Chart reveal ----
+       Plotly cannot draw a line progressively inside Streamlit without
+       adding a play button, so the container is revealed left to right
+       instead. The effect is the same: the trace appears to draw itself.
+
+       It replays whenever a chart is redrawn - switching Day +1 to
+       Day +2, or changing the history range - which makes the change
+       feel like a response rather than a jump cut. */
+    [data-testid="stPlotlyChart"] {{
+      animation: sweep 1s cubic-bezier(.4,0,.2,1) both; }}
+    /* Bars grow from the left.
+       Plotly frames were the obvious way to do this, but Streamlit
+       renders charts with autoplay off and a hidden updatemenu button
+       cannot fire itself - the bars stayed at zero. Scaling the
+       container horizontally gives the same effect and cannot silently
+       fail. transform-origin pins the growth to the axis, so the bars
+       extend rightward from their labels rather than expanding
+       outward from the middle. */
+    .shap-charts [data-testid="stPlotlyChart"] {{
+      animation: grow-bars .85s cubic-bezier(.34,1.12,.64,1) both .1s;
+      transform-origin: left center; }}
+    @keyframes grow-bars {{
+      from {{ transform: scaleX(.02); opacity:.35; }}
+      to   {{ transform: scaleX(1);   opacity:1;   }} }}
+    @keyframes sweep {{
+      from {{ clip-path: inset(0 100% 0 0); opacity:.4; }}
+      to   {{ clip-path: inset(0 0 0 0);    opacity:1;  }} }}
+
     /* ---- Motion ---- */
     @keyframes rise {{ from{{opacity:0;transform:translateY(10px)}}
                        to{{opacity:1;transform:translateY(0)}} }}
@@ -190,7 +242,8 @@ def inject_css(dark):
     @keyframes grow {{ from{{width:0 !important}} }}
     @media (prefers-reduced-motion: reduce) {{
       *,*::before,*::after {{ animation-duration:.01ms !important;
-                              animation-iteration-count:1 !important; }} }}
+                              animation-iteration-count:1 !important; }}
+      [data-testid="stPlotlyChart"] {{ clip-path:none !important; }} }}
 
     /* ---- Dialog ----
        Rendered in a portal outside .stApp, so it needs its own rules or
@@ -217,6 +270,21 @@ def inject_css(dark):
 # ---------------------------------------------------------------
 # Data
 # ---------------------------------------------------------------
+@st.cache_data(ttl=3600, show_spinner=False)
+def read_shap():
+    """
+    The SHAP explanations, written by pipeline/11_explain.py.
+
+    Committed as JSON plus PNGs rather than computed here: SHAP needs
+    the model files and xgboost, neither of which the deployed app
+    carries, and the explanations only change when the models do.
+    """
+    if not SHAP_SUMMARY.exists():
+        return None
+    with open(SHAP_SUMMARY) as f:
+        return json.load(f)
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def read_snapshot():
     if not SNAPSHOT.exists():
@@ -307,6 +375,121 @@ def gauge(value, dark):
     fig.update_layout(height=190, margin=dict(l=16, r=16, t=8, b=8),
                       paper_bgcolor="rgba(0,0,0,0)", font=dict(color=lab))
     return fig
+
+
+def shap_importance_chart(block, dark):
+    """
+    Global importance, as a native chart rather than the matplotlib PNG
+    the script also writes.
+
+    The PNGs are still produced for the report, but embedding them here
+    looked wrong: a white figure on a dark page, unable to follow the
+    theme toggle and with no hover. Reading the numbers out of
+    shap_summary.json instead means one source of truth and a chart that
+    matches everything around it.
+    """
+    tx = "#f2f2f0" if dark else "#0b0b0b"
+    grid = "rgba(255,255,255,.07)" if dark else "rgba(0,0,0,.09)"
+    lab = "#8e8e88" if dark else "#4a4a46"
+
+    items = list(block["global_importance"].items())[:10][::-1]
+    names = [pretty_feature(k) for k, _ in items]
+    vals = [v for _, v in items]
+
+    fig = go.Figure(go.Bar(
+        x=vals, y=names, orientation="h",
+        marker=dict(color="#8DC63F", line=dict(color=tx, width=.4)),
+        hovertemplate="%{y}<br>%{x:.2f} AQI points<extra></extra>"))
+    fig.update_layout(
+        height=320, margin=dict(l=0, r=10, t=6, b=30),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color=lab, size=11),
+        xaxis=dict(title="mean absolute SHAP value", gridcolor=grid,
+                   range=[0, max(vals) * 1.08],
+                   tickfont=dict(color=lab), title_font=dict(color=lab, size=10)),
+        yaxis=dict(tickfont=dict(color=tx, size=11)),
+        hoverlabel=dict(bgcolor="#1a1a1a" if dark else "#ffffff",
+                        font_color=tx, bordercolor=grid),
+        # Bars grow out from zero on first draw. Plotly needs an explicit
+        # frame duration for this; without it they simply appear.
+        transition=dict(duration=650, easing="cubic-out"))
+    return fig
+
+
+def shap_local_chart(block, dark):
+    """One prediction, split into what pushed it up and what pulled it down."""
+    tx = "#f2f2f0" if dark else "#0b0b0b"
+    grid = "rgba(255,255,255,.07)" if dark else "rgba(0,0,0,.09)"
+    lab = "#8e8e88" if dark else "#4a4a46"
+
+    top = block["current_explanation"]["top"][:10][::-1]
+    names = [t["label"] for t in top]
+    vals = [t["contribution"] for t in top]
+    colours = ["#8DC63F" if v > 0 else "#d86050" for v in vals]
+
+    fig = go.Figure(go.Bar(
+        x=vals, y=names, orientation="h",
+        marker=dict(color=colours, line=dict(color=tx, width=.4)),
+        customdata=[t["value"] for t in top],
+        hovertemplate="%{y}<br>value %{customdata:.1f}"
+                      "<br>contributes %{x:+.2f} AQI<extra></extra>"))
+    fig.add_vline(x=0, line_width=1, line_color=lab)
+    fig.update_layout(
+        height=320, margin=dict(l=0, r=10, t=6, b=30),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color=lab, size=11),
+        xaxis=dict(title="contribution to the prediction", gridcolor=grid,
+                   range=[min(vals) * 1.15 - .1, max(vals) * 1.15 + .1],
+                   tickfont=dict(color=lab), title_font=dict(color=lab, size=10)),
+        yaxis=dict(tickfont=dict(color=tx, size=11)),
+        hoverlabel=dict(bgcolor="#1a1a1a" if dark else "#ffffff",
+                        font_color=tx, bordercolor=grid),
+        # Bars grow out from zero on first draw. Plotly needs an explicit
+        # frame duration for this; without it they simply appear.
+        transition=dict(duration=650, easing="cubic-out"))
+    return fig
+
+
+def pretty_feature(name):
+    """Readable labels, mirroring the ones in pipeline/11_explain.py."""
+    lookup = {
+        "aqi": "AQI now", "aqi_lag_1h": "AQI 1 h ago",
+        "aqi_lag_3h": "AQI 3 h ago", "aqi_lag_6h": "AQI 6 h ago",
+        "aqi_lag_12h": "AQI 12 h ago", "aqi_lag_24h": "AQI 24 h ago",
+        "aqi_lag_48h": "AQI 48 h ago", "aqi_lag_72h": "AQI 72 h ago",
+        "aqi_lag_168h": "AQI 1 week ago",
+        "aqi_roll_mean_1d": "AQI, 1-day mean",
+        "aqi_roll_mean_7d": "AQI, 7-day mean",
+        "aqi_roll_max_1d": "AQI, daily peak",
+        "aqi_roll_min_1d": "AQI, daily low",
+        "aqi_roll_std_1d": "AQI volatility",
+        "aqi_trend_6h": "6 h trend", "aqi_trend_24h": "24 h trend",
+        "aqi_trend_72h": "72 h trend", "aqi_vs_7d": "vs weekly average",
+        "pm2_5": "PM2.5", "pm10": "PM10", "no2": "NO2", "o3": "ozone",
+        "co": "CO", "so2": "SO2", "nh3": "ammonia",
+        "pm2_5_roll_24h": "PM2.5, daily mean",
+        "pm10_roll_24h": "PM10, daily mean",
+        "pm2_5_lag_24h": "PM2.5 24 h ago",
+        "temperature": "temperature", "humidity": "humidity",
+        "pressure": "pressure", "wind_speed": "wind speed",
+        "wind_u": "wind, east-west", "wind_v": "wind, north-south",
+        "ventilation": "ventilation", "calm_flag": "calm air",
+        "temp_range_24h": "24 h temperature range",
+        "pressure_trend_24h": "pressure trend",
+        "temperature_roll_24h": "temperature, daily mean",
+        "pressure_roll_24h": "pressure, daily mean",
+        "humidity_roll_24h": "humidity, daily mean",
+        "wind_speed_roll_24h": "wind, daily mean",
+        "precip_24h": "rain, last 24 h", "precip_72h": "rain, last 72 h",
+        "hours_ahead": "hours ahead", "sqrt_hours_ahead": "hours ahead (sqrt)",
+        "hour_sin": "hour of day", "hour_cos": "hour of day",
+        "month_sin": "time of year", "month_cos": "time of year",
+        "season_winter": "winter", "season_summer": "summer",
+        "season_monsoon": "monsoon", "season_post_monsoon": "post-monsoon",
+    }
+    if name.endswith("_x_hours"):
+        return pretty_feature(name[:-len("_x_hours")]) + " x lead time"
+    return lookup.get(name, name.replace("_", " "))
 
 
 def card(label, value, sub=""):
@@ -477,6 +660,67 @@ def view_accuracy(data, dark):
         'R&sup2; at day +1, +2 and +3, so their advantage grows as '
         'forecasting gets harder.</div>', unsafe_allow_html=True)
 
+    # ---- Explainability ----
+    shap_data = read_shap()
+    if shap_data is None:
+        return
+
+    st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+    st.markdown('<div class="shap-head"></div>', unsafe_allow_html=True)
+    st.markdown("##### What the models pay attention to")
+    st.markdown(
+        '<div class="foot" style="margin:-8px 0 14px">SHAP splits a '
+        'prediction into the contribution of every feature, and the parts '
+        'sum exactly to the result &mdash; so this is the model\'s actual '
+        'reasoning, not a guess at it.</div>', unsafe_allow_html=True)
+
+    choice = st.radio("Horizon", ["Day +1", "Day +2", "Day +3"],
+                      horizontal=True, label_visibility="collapsed",
+                      key="shap_day")
+    day = int(choice[-1])
+    block = shap_data["horizons"].get("day%d" % day)
+    if not block:
+        return
+
+    st.markdown('<div class="shap-charts">', unsafe_allow_html=True)
+    left, right = st.columns(2)
+    with left:
+        st.markdown('<div class="foot" style="margin-bottom:4px">'
+                    '<b>Overall</b> &middot; averaged across recent forecasts'
+                    '</div>', unsafe_allow_html=True)
+        st.plotly_chart(shap_importance_chart(block, dark),
+                        use_container_width=True,
+                        config={"displayModeBar": False})
+    with right:
+        st.markdown('<div class="foot" style="margin-bottom:4px">'
+                    '<b>This forecast</b> &middot; why the next value is what '
+                    'it is</div>', unsafe_allow_html=True)
+        st.plotly_chart(shap_local_chart(block, dark),
+                        use_container_width=True,
+                        config={"displayModeBar": False})
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    local = block["current_explanation"]
+    if block["model"].startswith("XGBoost"):
+        headline = ("predicts a change of %+.1f AQI from the current reading"
+                    % local["prediction"])
+    else:
+        headline = ("predicts AQI %.0f, from a baseline of %.0f"
+                    % (local["prediction"], local["base"]))
+    st.markdown(
+        f'<div class="foot">{block["model"]} &middot; explained at '
+        f'{block["hours_ahead"]} hours ahead &middot; {headline}.</div>',
+        unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="foot" style="margin-top:12px">The two model types '
+        'behave differently. The day +1 tree model spreads its attention '
+        'across pollutants and weather &mdash; PM2.5, and the 24-hour '
+        'temperature range, which signals the inversions that trap smoke '
+        'near the ground. The Ridge models lean almost entirely on the '
+        'most recent AQI, which is the persistence effect made visible.'
+        '</div>', unsafe_allow_html=True)
+
 
 def view_history(data, dark):
     span = st.radio("Range", ["24 hours", "7 days", "30 days"],
@@ -517,7 +761,7 @@ re-trained every night.
 
 - **Overview** — conditions now, plus the next 72 hours at a glance
 - **Forecast** — a whole day at a time, or any single hour you pick
-- **Accuracy** — how each model scores, and why that falls with distance
+- **Accuracy** — how each model scores, and what drives its predictions
 - **History** — what the air has actually been like, 24 hours to 30 days
 
 **Two things worth knowing**
@@ -546,10 +790,12 @@ def main():
     ss.setdefault("seen_welcome", False)
 
     with st.sidebar:
-        st.markdown(LOGO_SVG
-                    + '<div class="logo-sub">AQI PREDICTOR</div>'
-                      '<div class="logo-loc"><b>&#9679;</b> Ghotki, Sindh '
-                      '&middot; Pakistan</div>', unsafe_allow_html=True)
+        # Placeholder: the logo has to sit at the top, but its colour
+        # depends on the theme radio further down. Rendering it before
+        # that radio is read uses the PREVIOUS value, so the first click
+        # showed the old logo and it took a second click to catch up.
+        # A slot holds the position; the content is written afterwards.
+        logo_slot = st.empty()
 
         view = st.radio("Section", VIEWS, label_visibility="collapsed")
 
@@ -560,7 +806,25 @@ def main():
                          index=0 if ss.dark else 1,
                          horizontal=True, label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
-        ss.dark = theme == "Dark"
+
+        # Rerun the moment the theme changes.
+        #
+        # Streamlit renders widgets in declaration order, and inject_css
+        # runs after this whole sidebar block - so on the click that
+        # switches the theme, everything above has already been drawn
+        # with the old palette and only catches up on the next rerun.
+        # That is why switching used to take two clicks. Restarting the
+        # script here means the first click is enough; the extra pass is
+        # cheap because the snapshot and the logo are both cached.
+        if (theme == "Dark") != ss.dark:
+            ss.dark = theme == "Dark"
+            st.rerun()
+
+        logo_slot.markdown(
+            logo_tag(ss.dark)
+            + '<div class="logo-sub">AQI PREDICTOR</div>'
+              '<div class="logo-loc"><b>&#9679;</b> Ghotki, Sindh '
+              '&middot; Pakistan</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="side-head">ABOUT</div>', unsafe_allow_html=True)
         show_help = st.button("How this works")

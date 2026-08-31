@@ -1,33 +1,67 @@
+# ---------------------------------------------------------------
 # Secrets - never commit these
+# ---------------------------------------------------------------
 .env
 .streamlit/secrets.toml
 
+# ---------------------------------------------------------------
 # Python
+# ---------------------------------------------------------------
 __pycache__/
 *.pyc
 .venv/
 venv/
 
-# Data files are regenerable from the pipeline (steps 01-04) and total
-# ~70 MB, which makes cloning slow and trips GitHub's size warnings.
-data/raw/*.csv
-data/processed/*.csv
+# ---------------------------------------------------------------
+# Data
+#
+# The raw and processed CSVs are regenerable from pipeline steps 01-04
+# and total ~70 MB, which makes cloning slow and trips GitHub's size
+# warnings. Everything in data/ is ignored by default, then the two
+# files the deployed dashboard actually needs are allowed back in.
+#
+# Order matters: the broad ignore has to come first, and the negations
+# have to match the real paths. An earlier version only ignored
+# data/raw/*.csv and data/processed/*.csv, so the ! lines below were
+# excluding files from a pattern that never matched them - which is why
+# shap_summary.json silently never got committed.
+# ---------------------------------------------------------------
+data/*
 !data/dashboard_snapshot.json
-# Models live in the Hopsworks Model Registry; 09_predict.py downloads
-# the newest version automatically. The XGBoost day+1 model alone is
-# 9 MB, so keeping them out of git is deliberate rather than an
-# oversight - see the README for how to obtain them.
+!data/shap_summary.json
+
+# ---------------------------------------------------------------
+# Models
+#
+# Trained models live in the Hopsworks Model Registry; 09_predict.py
+# downloads the newest version automatically. The XGBoost day+1 model
+# alone is 9 MB, so keeping them out of git is deliberate rather than an
+# oversight - the README explains how to obtain them. The JSON metadata
+# is small and worth versioning.
+# ---------------------------------------------------------------
 models/*.pkl
 
+# ---------------------------------------------------------------
+# Application assets
+#
+# app/assets/ holds the 10Pearls logo in both themes, embedded as
+# base64 at render time. These MUST be committed or the deployed
+# sidebar falls back to plain text.
+# ---------------------------------------------------------------
+!app/assets/
+!app/assets/*.png
+
+# ---------------------------------------------------------------
 # Backups and scratch
+# ---------------------------------------------------------------
 models_backup_*/
-data/processed/*_backup_*.csv
+*_backup_*.csv
 _to_delete/
 
-# Caches and logs
+# ---------------------------------------------------------------
+# Caches, logs, OS
+# ---------------------------------------------------------------
 /tmp/hopsworks/
 *.log
-
-# OS
 .DS_Store
 Thumbs.db
