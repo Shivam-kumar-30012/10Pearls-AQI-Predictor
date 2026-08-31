@@ -217,7 +217,7 @@ def inject_css(dark):
 # ---------------------------------------------------------------
 # Data
 # ---------------------------------------------------------------
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=3600, show_spinner=False)
 def read_snapshot():
     if not SNAPSHOT.exists():
         return None
