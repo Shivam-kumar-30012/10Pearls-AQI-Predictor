@@ -1,579 +1,559 @@
 {
- "generated_at": "2026-10-12T08:57:32.773800+00:00",
- "predicted_from": "2026-10-12T08:00:00+00:00",
+ "generated_at": "2026-10-13T09:19:17.076823+00:00",
+ "predicted_from": "2026-10-13T08:00:00+00:00",
  "data_source": "local CSV (ahead of store)",
  "city": "Ghotki",
  "current": {
-  "aqi": 111,
+  "aqi": 122,
   "category": "Unhealthy for Sensitive Groups",
   "dominant_pollutant": "pm2_5",
-  "trend_6h": 14.0,
-  "temperature": 35.8,
-  "humidity": 38,
-  "wind_speed": 10.9,
-  "wind_deg": 57,
+  "trend_6h": -1.0,
+  "temperature": 37.3,
+  "humidity": 33,
+  "wind_speed": 0.4,
+  "wind_deg": 180,
   "pollutants": {
-   "pm2_5": 38.4,
-   "pm10": 163.6,
-   "no2": 0.2,
-   "o3": 84.9,
-   "co": 136.1,
-   "so2": 0.9
+   "pm2_5": 34.0,
+   "pm10": 114.9,
+   "no2": 0.3,
+   "o3": 100.8,
+   "co": 144.5,
+   "so2": 2.7
   }
  },
  "forecast": [
   {
-   "timestamp": "2026-10-12T09:00:00+00:00",
+   "timestamp": "2026-10-13T09:00:00+00:00",
    "hours_ahead": 1,
-   "day": 1,
-   "aqi": 113,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T10:00:00+00:00",
-   "hours_ahead": 2,
-   "day": 1,
-   "aqi": 114,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T11:00:00+00:00",
-   "hours_ahead": 3,
-   "day": 1,
-   "aqi": 115,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T12:00:00+00:00",
-   "hours_ahead": 4,
-   "day": 1,
-   "aqi": 117,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T13:00:00+00:00",
-   "hours_ahead": 5,
-   "day": 1,
-   "aqi": 118,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T14:00:00+00:00",
-   "hours_ahead": 6,
-   "day": 1,
-   "aqi": 121,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T15:00:00+00:00",
-   "hours_ahead": 7,
    "day": 1,
    "aqi": 122,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-12T16:00:00+00:00",
-   "hours_ahead": 8,
+   "timestamp": "2026-10-13T10:00:00+00:00",
+   "hours_ahead": 2,
+   "day": 1,
+   "aqi": 122,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T11:00:00+00:00",
+   "hours_ahead": 3,
+   "day": 1,
+   "aqi": 124,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T12:00:00+00:00",
+   "hours_ahead": 4,
    "day": 1,
    "aqi": 123,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-12T17:00:00+00:00",
-   "hours_ahead": 9,
-   "day": 1,
-   "aqi": 124,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T18:00:00+00:00",
-   "hours_ahead": 10,
+   "timestamp": "2026-10-13T13:00:00+00:00",
+   "hours_ahead": 5,
    "day": 1,
    "aqi": 123,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-12T19:00:00+00:00",
-   "hours_ahead": 11,
-   "day": 1,
-   "aqi": 124,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T20:00:00+00:00",
-   "hours_ahead": 12,
-   "day": 1,
-   "aqi": 125,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T21:00:00+00:00",
-   "hours_ahead": 13,
-   "day": 1,
-   "aqi": 124,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-12T22:00:00+00:00",
-   "hours_ahead": 14,
+   "timestamp": "2026-10-13T14:00:00+00:00",
+   "hours_ahead": 6,
    "day": 1,
    "aqi": 123,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-12T23:00:00+00:00",
-   "hours_ahead": 15,
+   "timestamp": "2026-10-13T15:00:00+00:00",
+   "hours_ahead": 7,
    "day": 1,
-   "aqi": 125,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T00:00:00+00:00",
-   "hours_ahead": 16,
-   "day": 1,
-   "aqi": 126,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T01:00:00+00:00",
-   "hours_ahead": 17,
-   "day": 1,
-   "aqi": 125,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T02:00:00+00:00",
-   "hours_ahead": 18,
-   "day": 1,
-   "aqi": 124,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T03:00:00+00:00",
-   "hours_ahead": 19,
-   "day": 1,
-   "aqi": 126,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T04:00:00+00:00",
-   "hours_ahead": 20,
-   "day": 1,
-   "aqi": 126,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T05:00:00+00:00",
-   "hours_ahead": 21,
-   "day": 1,
-   "aqi": 125,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T06:00:00+00:00",
-   "hours_ahead": 22,
-   "day": 1,
-   "aqi": 125,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T07:00:00+00:00",
-   "hours_ahead": 23,
-   "day": 1,
-   "aqi": 124,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T08:00:00+00:00",
-   "hours_ahead": 24,
-   "day": 1,
-   "aqi": 123,
-   "category": "Unhealthy for Sensitive Groups"
-  },
-  {
-   "timestamp": "2026-10-13T09:00:00+00:00",
-   "hours_ahead": 25,
-   "day": 2,
    "aqi": 121,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T10:00:00+00:00",
+   "timestamp": "2026-10-13T16:00:00+00:00",
+   "hours_ahead": 8,
+   "day": 1,
+   "aqi": 119,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T17:00:00+00:00",
+   "hours_ahead": 9,
+   "day": 1,
+   "aqi": 119,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T18:00:00+00:00",
+   "hours_ahead": 10,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T19:00:00+00:00",
+   "hours_ahead": 11,
+   "day": 1,
+   "aqi": 121,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T20:00:00+00:00",
+   "hours_ahead": 12,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T21:00:00+00:00",
+   "hours_ahead": 13,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T22:00:00+00:00",
+   "hours_ahead": 14,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-13T23:00:00+00:00",
+   "hours_ahead": 15,
+   "day": 1,
+   "aqi": 123,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T00:00:00+00:00",
+   "hours_ahead": 16,
+   "day": 1,
+   "aqi": 123,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T01:00:00+00:00",
+   "hours_ahead": 17,
+   "day": 1,
+   "aqi": 124,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T02:00:00+00:00",
+   "hours_ahead": 18,
+   "day": 1,
+   "aqi": 123,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T03:00:00+00:00",
+   "hours_ahead": 19,
+   "day": 1,
+   "aqi": 122,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T04:00:00+00:00",
+   "hours_ahead": 20,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T05:00:00+00:00",
+   "hours_ahead": 21,
+   "day": 1,
+   "aqi": 121,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T06:00:00+00:00",
+   "hours_ahead": 22,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T07:00:00+00:00",
+   "hours_ahead": 23,
+   "day": 1,
+   "aqi": 121,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T08:00:00+00:00",
+   "hours_ahead": 24,
+   "day": 1,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T09:00:00+00:00",
+   "hours_ahead": 25,
+   "day": 2,
+   "aqi": 120,
+   "category": "Unhealthy for Sensitive Groups"
+  },
+  {
+   "timestamp": "2026-10-14T10:00:00+00:00",
    "hours_ahead": 26,
    "day": 2,
    "aqi": 120,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T11:00:00+00:00",
+   "timestamp": "2026-10-14T11:00:00+00:00",
    "hours_ahead": 27,
    "day": 2,
    "aqi": 120,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T12:00:00+00:00",
+   "timestamp": "2026-10-14T12:00:00+00:00",
    "hours_ahead": 28,
    "day": 2,
-   "aqi": 120,
+   "aqi": 119,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T13:00:00+00:00",
+   "timestamp": "2026-10-14T13:00:00+00:00",
    "hours_ahead": 29,
    "day": 2,
    "aqi": 119,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T14:00:00+00:00",
+   "timestamp": "2026-10-14T14:00:00+00:00",
    "hours_ahead": 30,
    "day": 2,
    "aqi": 119,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T15:00:00+00:00",
+   "timestamp": "2026-10-14T15:00:00+00:00",
    "hours_ahead": 31,
    "day": 2,
-   "aqi": 119,
+   "aqi": 118,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T16:00:00+00:00",
+   "timestamp": "2026-10-14T16:00:00+00:00",
    "hours_ahead": 32,
    "day": 2,
    "aqi": 118,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T17:00:00+00:00",
+   "timestamp": "2026-10-14T17:00:00+00:00",
    "hours_ahead": 33,
    "day": 2,
    "aqi": 118,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T18:00:00+00:00",
+   "timestamp": "2026-10-14T18:00:00+00:00",
    "hours_ahead": 34,
    "day": 2,
-   "aqi": 118,
+   "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T19:00:00+00:00",
+   "timestamp": "2026-10-14T19:00:00+00:00",
    "hours_ahead": 35,
    "day": 2,
    "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T20:00:00+00:00",
+   "timestamp": "2026-10-14T20:00:00+00:00",
    "hours_ahead": 36,
    "day": 2,
    "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T21:00:00+00:00",
+   "timestamp": "2026-10-14T21:00:00+00:00",
    "hours_ahead": 37,
    "day": 2,
    "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T22:00:00+00:00",
+   "timestamp": "2026-10-14T22:00:00+00:00",
    "hours_ahead": 38,
    "day": 2,
    "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-13T23:00:00+00:00",
+   "timestamp": "2026-10-14T23:00:00+00:00",
    "hours_ahead": 39,
    "day": 2,
    "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T00:00:00+00:00",
+   "timestamp": "2026-10-15T00:00:00+00:00",
    "hours_ahead": 40,
    "day": 2,
    "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T01:00:00+00:00",
+   "timestamp": "2026-10-15T01:00:00+00:00",
    "hours_ahead": 41,
    "day": 2,
    "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T02:00:00+00:00",
+   "timestamp": "2026-10-15T02:00:00+00:00",
    "hours_ahead": 42,
    "day": 2,
    "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T03:00:00+00:00",
+   "timestamp": "2026-10-15T03:00:00+00:00",
    "hours_ahead": 43,
    "day": 2,
    "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T04:00:00+00:00",
+   "timestamp": "2026-10-15T04:00:00+00:00",
    "hours_ahead": 44,
    "day": 2,
    "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T05:00:00+00:00",
+   "timestamp": "2026-10-15T05:00:00+00:00",
    "hours_ahead": 45,
    "day": 2,
    "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T06:00:00+00:00",
+   "timestamp": "2026-10-15T06:00:00+00:00",
    "hours_ahead": 46,
    "day": 2,
    "aqi": 113,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T07:00:00+00:00",
+   "timestamp": "2026-10-15T07:00:00+00:00",
    "hours_ahead": 47,
    "day": 2,
    "aqi": 113,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T08:00:00+00:00",
+   "timestamp": "2026-10-15T08:00:00+00:00",
    "hours_ahead": 48,
    "day": 2,
    "aqi": 113,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T09:00:00+00:00",
+   "timestamp": "2026-10-15T09:00:00+00:00",
    "hours_ahead": 49,
    "day": 3,
-   "aqi": 110,
+   "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T10:00:00+00:00",
+   "timestamp": "2026-10-15T10:00:00+00:00",
    "hours_ahead": 50,
    "day": 3,
-   "aqi": 109,
+   "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T11:00:00+00:00",
+   "timestamp": "2026-10-15T11:00:00+00:00",
    "hours_ahead": 51,
    "day": 3,
-   "aqi": 109,
+   "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T12:00:00+00:00",
+   "timestamp": "2026-10-15T12:00:00+00:00",
    "hours_ahead": 52,
    "day": 3,
-   "aqi": 109,
+   "aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T13:00:00+00:00",
+   "timestamp": "2026-10-15T13:00:00+00:00",
    "hours_ahead": 53,
    "day": 3,
-   "aqi": 109,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T14:00:00+00:00",
+   "timestamp": "2026-10-15T14:00:00+00:00",
    "hours_ahead": 54,
    "day": 3,
-   "aqi": 109,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T15:00:00+00:00",
+   "timestamp": "2026-10-15T15:00:00+00:00",
    "hours_ahead": 55,
    "day": 3,
-   "aqi": 108,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T16:00:00+00:00",
+   "timestamp": "2026-10-15T16:00:00+00:00",
    "hours_ahead": 56,
    "day": 3,
-   "aqi": 108,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T17:00:00+00:00",
+   "timestamp": "2026-10-15T17:00:00+00:00",
    "hours_ahead": 57,
    "day": 3,
-   "aqi": 108,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T18:00:00+00:00",
+   "timestamp": "2026-10-15T18:00:00+00:00",
    "hours_ahead": 58,
    "day": 3,
-   "aqi": 108,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T19:00:00+00:00",
+   "timestamp": "2026-10-15T19:00:00+00:00",
    "hours_ahead": 59,
    "day": 3,
-   "aqi": 108,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T20:00:00+00:00",
+   "timestamp": "2026-10-15T20:00:00+00:00",
    "hours_ahead": 60,
    "day": 3,
-   "aqi": 107,
+   "aqi": 116,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T21:00:00+00:00",
+   "timestamp": "2026-10-15T21:00:00+00:00",
    "hours_ahead": 61,
    "day": 3,
-   "aqi": 107,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T22:00:00+00:00",
+   "timestamp": "2026-10-15T22:00:00+00:00",
    "hours_ahead": 62,
    "day": 3,
-   "aqi": 107,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-14T23:00:00+00:00",
+   "timestamp": "2026-10-15T23:00:00+00:00",
    "hours_ahead": 63,
    "day": 3,
-   "aqi": 107,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T00:00:00+00:00",
+   "timestamp": "2026-10-16T00:00:00+00:00",
    "hours_ahead": 64,
    "day": 3,
-   "aqi": 107,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T01:00:00+00:00",
+   "timestamp": "2026-10-16T01:00:00+00:00",
    "hours_ahead": 65,
    "day": 3,
-   "aqi": 107,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T02:00:00+00:00",
+   "timestamp": "2026-10-16T02:00:00+00:00",
    "hours_ahead": 66,
    "day": 3,
-   "aqi": 106,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T03:00:00+00:00",
+   "timestamp": "2026-10-16T03:00:00+00:00",
    "hours_ahead": 67,
    "day": 3,
-   "aqi": 106,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T04:00:00+00:00",
+   "timestamp": "2026-10-16T04:00:00+00:00",
    "hours_ahead": 68,
    "day": 3,
-   "aqi": 106,
+   "aqi": 115,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T05:00:00+00:00",
+   "timestamp": "2026-10-16T05:00:00+00:00",
    "hours_ahead": 69,
    "day": 3,
-   "aqi": 106,
+   "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T06:00:00+00:00",
+   "timestamp": "2026-10-16T06:00:00+00:00",
    "hours_ahead": 70,
    "day": 3,
-   "aqi": 106,
+   "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T07:00:00+00:00",
+   "timestamp": "2026-10-16T07:00:00+00:00",
    "hours_ahead": 71,
    "day": 3,
-   "aqi": 105,
+   "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
-   "timestamp": "2026-10-15T08:00:00+00:00",
+   "timestamp": "2026-10-16T08:00:00+00:00",
    "hours_ahead": 72,
    "day": 3,
-   "aqi": 105,
+   "aqi": 114,
    "category": "Unhealthy for Sensitive Groups"
   }
  ],
  "daily": [
   {
    "day": 1,
-   "date": "2026-10-12",
-   "mean_aqi": 122,
-   "min_aqi": 113,
-   "max_aqi": 126,
+   "date": "2026-10-13",
+   "mean_aqi": 121,
+   "min_aqi": 119,
+   "max_aqi": 124,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
    "day": 2,
-   "date": "2026-10-13",
-   "mean_aqi": 117,
+   "date": "2026-10-14",
+   "mean_aqi": 116,
    "min_aqi": 113,
-   "max_aqi": 121,
+   "max_aqi": 120,
    "category": "Unhealthy for Sensitive Groups"
   },
   {
    "day": 3,
-   "date": "2026-10-14",
-   "mean_aqi": 107,
-   "min_aqi": 105,
-   "max_aqi": 110,
+   "date": "2026-10-15",
+   "mean_aqi": 116,
+   "min_aqi": 114,
+   "max_aqi": 117,
    "category": "Unhealthy for Sensitive Groups"
   }
  ],
  "history": [
-  {
-   "timestamp": "2026-09-13T03:00:00+00:00",
-   "aqi": 100
-  },
-  {
-   "timestamp": "2026-09-13T04:00:00+00:00",
-   "aqi": 102
-  },
-  {
-   "timestamp": "2026-09-13T05:00:00+00:00",
-   "aqi": 104
-  },
-  {
-   "timestamp": "2026-09-13T06:00:00+00:00",
-   "aqi": 106
-  },
-  {
-   "timestamp": "2026-09-13T07:00:00+00:00",
-   "aqi": 107
-  },
   {
    "timestamp": "2026-09-13T08:00:00+00:00",
    "aqi": 108
@@ -2900,135 +2880,135 @@
   },
   {
    "timestamp": "2026-10-09T06:00:00+00:00",
-   "aqi": 59
+   "aqi": 58
   },
   {
    "timestamp": "2026-10-09T07:00:00+00:00",
-   "aqi": 59
+   "aqi": 58
   },
   {
    "timestamp": "2026-10-09T08:00:00+00:00",
-   "aqi": 59
+   "aqi": 58
   },
   {
    "timestamp": "2026-10-09T09:00:00+00:00",
-   "aqi": 60
+   "aqi": 59
   },
   {
    "timestamp": "2026-10-09T10:00:00+00:00",
-   "aqi": 60
+   "aqi": 59
   },
   {
    "timestamp": "2026-10-09T11:00:00+00:00",
-   "aqi": 61
+   "aqi": 59
   },
   {
    "timestamp": "2026-10-09T12:00:00+00:00",
-   "aqi": 61
+   "aqi": 60
   },
   {
    "timestamp": "2026-10-09T13:00:00+00:00",
-   "aqi": 62
+   "aqi": 60
   },
   {
    "timestamp": "2026-10-09T14:00:00+00:00",
-   "aqi": 62
+   "aqi": 60
   },
   {
    "timestamp": "2026-10-09T15:00:00+00:00",
-   "aqi": 62
+   "aqi": 60
   },
   {
    "timestamp": "2026-10-09T16:00:00+00:00",
-   "aqi": 63
+   "aqi": 60
   },
   {
    "timestamp": "2026-10-09T17:00:00+00:00",
-   "aqi": 63
+   "aqi": 61
   },
   {
    "timestamp": "2026-10-09T18:00:00+00:00",
-   "aqi": 63
+   "aqi": 61
   },
   {
    "timestamp": "2026-10-09T19:00:00+00:00",
-   "aqi": 64
+   "aqi": 61
   },
   {
    "timestamp": "2026-10-09T20:00:00+00:00",
-   "aqi": 64
+   "aqi": 62
   },
   {
    "timestamp": "2026-10-09T21:00:00+00:00",
-   "aqi": 64
+   "aqi": 62
   },
   {
    "timestamp": "2026-10-09T22:00:00+00:00",
-   "aqi": 65
+   "aqi": 62
   },
   {
    "timestamp": "2026-10-09T23:00:00+00:00",
-   "aqi": 65
+   "aqi": 62
   },
   {
    "timestamp": "2026-10-10T00:00:00+00:00",
-   "aqi": 65
+   "aqi": 63
   },
   {
    "timestamp": "2026-10-10T01:00:00+00:00",
-   "aqi": 66
+   "aqi": 63
   },
   {
    "timestamp": "2026-10-10T02:00:00+00:00",
-   "aqi": 66
+   "aqi": 63
   },
   {
    "timestamp": "2026-10-10T03:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T04:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T05:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T06:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T07:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T08:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T09:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T10:00:00+00:00",
-   "aqi": 66
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T11:00:00+00:00",
-   "aqi": 65
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T12:00:00+00:00",
-   "aqi": 65
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T13:00:00+00:00",
-   "aqi": 65
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T14:00:00+00:00",
-   "aqi": 65
+   "aqi": 64
   },
   {
    "timestamp": "2026-10-10T15:00:00+00:00",
@@ -3040,7 +3020,7 @@
   },
   {
    "timestamp": "2026-10-10T17:00:00+00:00",
-   "aqi": 67
+   "aqi": 66
   },
   {
    "timestamp": "2026-10-10T18:00:00+00:00",
@@ -3196,35 +3176,107 @@
   },
   {
    "timestamp": "2026-10-12T08:00:00+00:00",
+   "aqi": 110
+  },
+  {
+   "timestamp": "2026-10-12T09:00:00+00:00",
    "aqi": 111
+  },
+  {
+   "timestamp": "2026-10-12T10:00:00+00:00",
+   "aqi": 112
+  },
+  {
+   "timestamp": "2026-10-12T11:00:00+00:00",
+   "aqi": 113
+  },
+  {
+   "timestamp": "2026-10-12T12:00:00+00:00",
+   "aqi": 114
+  },
+  {
+   "timestamp": "2026-10-12T13:00:00+00:00",
+   "aqi": 115
+  },
+  {
+   "timestamp": "2026-10-12T14:00:00+00:00",
+   "aqi": 115
+  },
+  {
+   "timestamp": "2026-10-12T15:00:00+00:00",
+   "aqi": 116
+  },
+  {
+   "timestamp": "2026-10-12T16:00:00+00:00",
+   "aqi": 117
+  },
+  {
+   "timestamp": "2026-10-12T17:00:00+00:00",
+   "aqi": 117
+  },
+  {
+   "timestamp": "2026-10-12T18:00:00+00:00",
+   "aqi": 118
+  },
+  {
+   "timestamp": "2026-10-12T19:00:00+00:00",
+   "aqi": 118
+  },
+  {
+   "timestamp": "2026-10-12T20:00:00+00:00",
+   "aqi": 119
+  },
+  {
+   "timestamp": "2026-10-12T21:00:00+00:00",
+   "aqi": 120
+  },
+  {
+   "timestamp": "2026-10-12T22:00:00+00:00",
+   "aqi": 120
+  },
+  {
+   "timestamp": "2026-10-12T23:00:00+00:00",
+   "aqi": 121
+  },
+  {
+   "timestamp": "2026-10-13T00:00:00+00:00",
+   "aqi": 122
+  },
+  {
+   "timestamp": "2026-10-13T01:00:00+00:00",
+   "aqi": 122
+  },
+  {
+   "timestamp": "2026-10-13T02:00:00+00:00",
+   "aqi": 123
+  },
+  {
+   "timestamp": "2026-10-13T03:00:00+00:00",
+   "aqi": 123
+  },
+  {
+   "timestamp": "2026-10-13T04:00:00+00:00",
+   "aqi": 123
+  },
+  {
+   "timestamp": "2026-10-13T05:00:00+00:00",
+   "aqi": 123
+  },
+  {
+   "timestamp": "2026-10-13T06:00:00+00:00",
+   "aqi": 123
+  },
+  {
+   "timestamp": "2026-10-13T07:00:00+00:00",
+   "aqi": 122
+  },
+  {
+   "timestamp": "2026-10-13T08:00:00+00:00",
+   "aqi": 122
   }
  ],
  "pollutant_history": {
   "pm2_5": [
-   22.3,
-   21.8,
-   20.7,
-   20.5,
-   21.3,
-   23.2,
-   25.2,
-   26.5,
-   27.4,
-   27.6,
-   26.7,
-   26.1,
-   25.6,
-   25.1,
-   25.2,
-   25.5,
-   25.9,
-   26.6,
-   27.2,
-   27.2,
-   27.9,
-   30.1,
-   26.3,
-   25.1,
    25.5,
    26.3,
    26.7,
@@ -3234,147 +3286,147 @@
    33.2,
    35.4,
    37.5,
-   38.9,
+   39.0,
    39.5,
    40.4,
-   41.4,
+   41.5,
    42.2,
-   43.1,
+   43.2,
    44.3,
    45.5,
-   47.5,
-   49.8,
-   52.0,
-   53.5,
-   54.7,
-   44.5,
-   38.4
+   47.4,
+   49.5,
+   51.8,
+   53.0,
+   53.9,
+   43.4,
+   36.9,
+   35.3,
+   35.0,
+   35.1,
+   35.2,
+   36.2,
+   38.0,
+   39.9,
+   41.5,
+   43.4,
+   45.1,
+   45.9,
+   46.9,
+   47.9,
+   48.4,
+   49.2,
+   49.9,
+   50.6,
+   51.6,
+   52.3,
+   51.6,
+   51.6,
+   52.1,
+   39.2,
+   34.0
   ],
   "pm10": [
-   101.5,
-   89.5,
-   78.4,
-   76.3,
-   80.2,
-   88.3,
-   95.2,
-   98.2,
-   99.1,
-   96.8,
-   92.0,
-   89.2,
-   88.2,
-   87.5,
-   87.9,
-   89.5,
-   91.6,
-   94.8,
-   97.5,
-   100.7,
-   104.2,
-   108.8,
-   94.3,
-   86.2,
-   86.7,
+   86.8,
    89.0,
-   90.7,
+   90.8,
    93.4,
-   99.4,
+   99.5,
    109.3,
-   120.0,
-   128.2,
-   135.1,
+   120.1,
+   128.3,
+   135.4,
    140.9,
+   141.1,
+   141.2,
+   144.0,
+   147.3,
+   152.8,
+   159.7,
+   167.8,
+   177.9,
+   192.6,
+   221.1,
+   227.3,
+   227.4,
+   189.1,
+   153.2,
+   141.8,
+   138.4,
+   138.0,
+   138.3,
+   139.1,
    140.8,
-   140.9,
-   143.6,
-   147.1,
-   152.4,
-   159.4,
-   167.9,
-   178.7,
-   194.0,
-   220.6,
-   226.7,
-   229.3,
-   196.6,
-   163.6
+   143.3,
+   145.9,
+   150.3,
+   153.6,
+   154.0,
+   154.8,
+   155.8,
+   155.2,
+   155.8,
+   157.7,
+   160.8,
+   167.3,
+   177.3,
+   193.3,
+   195.6,
+   193.4,
+   142.1,
+   114.9
   ],
   "no2": [
-   0.3,
-   0.3,
    0.2,
    0.3,
-   0.4,
-   0.6,
+   0.3,
+   0.3,
+   0.5,
+   0.5,
    0.6,
    0.7,
    0.8,
+   0.8,
    0.9,
+   0.9,
+   1.0,
+   1.0,
+   0.9,
+   0.9,
+   0.8,
+   1.0,
    1.1,
-   1.2,
-   1.4,
-   1.4,
-   1.5,
+   0.8,
+   0.7,
+   0.6,
+   0.3,
+   0.2,
+   0.2,
+   0.2,
+   0.3,
+   0.3,
+   0.9,
    1.6,
-   1.7,
-   1.9,
+   2.2,
+   2.6,
+   2.8,
+   2.9,
+   2.8,
+   2.6,
+   2.4,
+   2.2,
+   2.1,
    2.0,
-   1.6,
-   1.2,
-   0.9,
-   0.4,
-   0.3,
-   0.2,
-   0.3,
-   0.3,
-   0.3,
-   0.5,
-   0.5,
-   0.6,
-   0.7,
-   0.8,
-   0.8,
-   0.9,
-   0.9,
-   1.0,
-   1.0,
-   0.9,
-   0.9,
-   0.8,
-   1.0,
+   1.9,
+   1.9,
+   1.9,
+   1.3,
    1.1,
    0.9,
-   0.8,
-   0.7,
-   0.3,
-   0.2
+   0.4,
+   0.3
   ],
   "o3": [
-   72.4,
-   84.3,
-   92.5,
-   94.7,
-   94.0,
-   91.8,
-   91.8,
-   91.7,
-   90.8,
-   87.4,
-   80.5,
-   73.1,
-   65.6,
-   58.2,
-   52.1,
-   47.2,
-   42.6,
-   38.8,
-   36.4,
-   40.1,
-   48.9,
-   59.2,
-   87.1,
-   94.2,
    94.3,
    95.4,
    94.9,
@@ -3383,98 +3435,98 @@
    91.1,
    89.8,
    86.3,
-   82.2,
-   78.5,
-   72.0,
+   82.4,
+   78.7,
+   72.1,
    64.6,
    58.3,
-   53.0,
-   50.1,
-   48.8,
+   53.1,
+   50.3,
+   48.9,
    48.0,
-   46.7,
-   47.5,
-   56.5,
-   61.2,
-   66.6,
-   82.0,
-   84.9
+   46.5,
+   46.9,
+   55.7,
+   60.1,
+   64.5,
+   81.3,
+   85.2,
+   85.6,
+   86.4,
+   85.8,
+   84.9,
+   77.6,
+   67.5,
+   60.7,
+   55.6,
+   51.1,
+   47.4,
+   44.3,
+   42.0,
+   40.1,
+   38.1,
+   36.6,
+   35.6,
+   34.8,
+   34.3,
+   36.7,
+   51.3,
+   58.4,
+   66.3,
+   95.6,
+   100.8
   ],
   "co": [
-   120.5,
-   114.7,
-   110.5,
-   110.1,
-   113.7,
-   121.1,
-   128.1,
-   132.8,
-   140.7,
-   149.6,
-   156.5,
-   165.1,
-   172.6,
-   176.0,
-   180.5,
-   184.6,
-   187.5,
-   193.9,
-   200.1,
-   196.9,
-   191.3,
-   188.7,
-   145.0,
-   130.3,
-   126.7,
+   126.8,
    127.4,
-   127.7,
+   127.8,
    128.7,
-   131.1,
-   136.1,
-   141.1,
+   131.5,
+   136.3,
+   141.6,
    145.2,
-   150.5,
-   153.7,
+   150.6,
+   154.0,
    153.7,
    156.2,
    158.6,
    160.3,
-   160.9,
+   161.2,
    160.6,
-   159.5,
-   166.8,
-   176.3,
-   174.8,
-   180.4,
-   183.6,
-   147.5,
-   136.1
+   159.4,
+   165.7,
+   173.6,
+   169.7,
+   171.1,
+   172.3,
+   144.0,
+   135.8,
+   135.7,
+   137.7,
+   139.7,
+   141.5,
+   157.6,
+   187.9,
+   220.0,
+   244.2,
+   261.5,
+   269.9,
+   264.0,
+   255.9,
+   250.1,
+   245.2,
+   243.0,
+   241.2,
+   239.4,
+   247.1,
+   252.9,
+   233.7,
+   230.9,
+   232.9,
+   164.2,
+   144.5
   ],
   "so2": [
-   2.4,
-   2.0,
-   1.6,
-   1.5,
-   1.4,
-   1.5,
-   1.5,
-   1.6,
-   1.6,
-   1.7,
-   1.8,
-   1.8,
-   1.7,
-   1.5,
-   1.3,
-   1.1,
-   1.1,
-   1.1,
-   1.1,
-   1.3,
-   1.4,
-   1.5,
-   1.9,
-   1.9,
    1.8,
    1.8,
    1.8,
@@ -3491,33 +3543,57 @@
    0.7,
    0.5,
    0.5,
+   0.4,
    0.5,
-   0.5,
+   0.6,
    0.7,
+   0.6,
+   0.6,
+   0.7,
+   0.8,
    0.9,
    0.9,
+   0.9,
+   0.9,
+   0.9,
+   1.0,
+   1.2,
+   1.3,
+   1.3,
+   1.2,
+   1.0,
+   0.9,
    0.8,
-   0.8,
-   0.9
+   0.7,
+   0.6,
+   0.6,
+   0.5,
+   0.6,
+   0.7,
+   1.0,
+   1.1,
+   1.3,
+   3.1,
+   2.7
   ]
  },
  "models": {
   "day1": {
-   "source": "registry v41",
+   "source": "registry v42",
    "type": "delta",
    "r2": 0.9311662316322327,
    "rmse": 16.606769404043114,
    "mae": 8.218056678771973
   },
   "day2": {
-   "source": "registry v41",
+   "source": "registry v42",
    "type": "absolute",
    "r2": 0.7148239612579346,
    "rmse": 33.924089848812635,
    "mae": 22.733684539794922
   },
   "day3": {
-   "source": "registry v41",
+   "source": "registry v42",
    "type": "absolute",
    "r2": 0.6111236810684204,
    "rmse": 39.58536007695111,
