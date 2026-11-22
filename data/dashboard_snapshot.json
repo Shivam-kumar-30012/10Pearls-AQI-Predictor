@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T09:31:05.809579+00:00",
+ "generated_at": "2026-11-22T09:39:14.934206+00:00",
  "predicted_from": "2026-09-03T06:00:00+00:00",
  "data_source": "Hopsworks feature store",
  "city": "Ghotki",
@@ -3743,21 +3743,21 @@
  },
  "models": {
   "day1": {
-   "source": "registry v81",
+   "source": "registry v82",
    "type": "delta",
    "r2": 0.9311662316322327,
    "rmse": 16.606769404043114,
    "mae": 8.218056678771973
   },
   "day2": {
-   "source": "registry v81",
+   "source": "registry v82",
    "type": "absolute",
    "r2": 0.7148239612579346,
    "rmse": 33.924089848812635,
    "mae": 22.733684539794922
   },
   "day3": {
-   "source": "registry v81",
+   "source": "registry v82",
    "type": "absolute",
    "r2": 0.6111236810684204,
    "rmse": 39.58535853508924,
